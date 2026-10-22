@@ -8,3 +8,13 @@
 
 /* Homepage custom illustrations */
 .hero-art{min-height:385px;display:block;padding:10px 0 20px}.hero-art>img{display:block;width:100%;height:auto;max-height:430px;object-fit:contain;border-radius:18px;box-shadow:0 22px 55px #0002}.hero-art .metric.two{right:-8px;top:0}.hero-art .metric.one{left:-12px;bottom:0}.feature-illustration{display:block;width:calc(100% + 60px);max-width:none;height:auto;margin:26px -30px 22px;border-radius:12px;position:relative;z-index:1}.feature-panel .sub{position:relative;z-index:2}@media(max-width:850px){.hero-art{min-height:0;max-width:620px;margin:0 auto;width:100%;padding:10px 0 22px}.hero-art>img{max-height:none}.hero-art .metric.two{right:0;top:0}.hero-art .metric.one{left:0;bottom:0}}@media(max-width:560px){.hero-art{padding:20px 0 44px}.hero-art .metric{padding:10px 12px}.hero-art .metric strong{font-size:12px}.hero-art .metric small{font-size:9px}.feature-illustration{width:calc(100% + 46px);margin:22px -23px 20px}}
+
+
+/* Mobile header: center the enlarged logo and hide the adjacent wordmark text */
+@media(max-width:560px){
+  .navinner{position:relative;justify-content:center;min-height:100px}
+  .navinner>.brand{margin:0 auto;gap:0}
+  .navinner>.brand span{display:none}
+  .navinner>.brand .brandmark{width:86px;height:86px}
+  .navinner>.menu{position:absolute;right:0;top:50%;transform:translateY(-50%)}
+}
