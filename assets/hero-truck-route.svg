@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="title desc">
+<title id="title">Truck on a planned freight route</title><desc id="desc">A modern white semi truck and trailer on a clean route map with burgundy route markers.</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#333"/><stop offset="1" stop-color="#171717"/></linearGradient><linearGradient id="trail" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#e8e8e8"/></linearGradient><filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="14" stdDeviation="13" flood-color="#000" flood-opacity=".3"/></filter></defs>
+<rect width="760" height="520" rx="28" fill="url(#bg)"/>
+<g fill="none" stroke="#fff" stroke-opacity=".09" stroke-width="2"><path d="M-20 95H780M-20 175H780M-20 255H780M-20 335H780M-20 415H780"/><path d="M100 -20V540M220 -20V540M340 -20V540M460 -20V540M580 -20V540M700 -20V540"/></g>
+<g fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="13" stroke-linecap="round"><path d="M65 400C170 350 160 230 285 220S455 340 550 240 620 110 710 92"/></g>
+<path d="M68 397C170 350 165 235 285 220S455 340 550 240 620 110 708 92" fill="none" stroke="#97343a" stroke-width="5" stroke-dasharray="11 12" stroke-linecap="round"/>
+<g transform="translate(70 335)"><circle r="23" fill="#97343a" stroke="#fff" stroke-width="5"/><circle r="6" fill="#fff"/></g><g transform="translate(708 92)"><circle r="23" fill="#97343a" stroke="#fff" stroke-width="5"/><circle r="6" fill="#fff"/></g>
+<g transform="translate(168 205) rotate(-9 220 100)" filter="url(#shadow)">
+<rect x="18" y="35" width="350" height="143" rx="9" fill="url(#trail)" stroke="#c9c9c9" stroke-width="3"/><rect x="33" y="49" width="320" height="7" rx="3" fill="#97343a"/><rect x="33" y="63" width="320" height="2" fill="#d6d6d6"/>
+<path d="M370 92h61q13 0 21 12l24 37v25q0 12-12 12h-94z" fill="#97343a"/><path d="M397 103h30q8 0 13 8l13 21h-56z" fill="#dce8ed"/><path d="M397 103v29h56" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3"/><rect x="376" y="142" width="82" height="10" rx="3" fill="#7d272d"/>
+<rect x="380" y="163" width="89" height="8" rx="3" fill="#171717"/><rect x="24" y="178" width="440" height="8" rx="4" fill="#171717"/>
+<g fill="#171717" stroke="#aaa" stroke-width="4"><circle cx="88" cy="187" r="21"/><circle cx="88" cy="187" r="8" fill="#bbb"/><circle cx="322" cy="187" r="21"/><circle cx="322" cy="187" r="8" fill="#bbb"/><circle cx="410" cy="187" r="21"/><circle cx="410" cy="187" r="8" fill="#bbb"/></g>
+<text x="42" y="115" fill="#171717" font-family="Arial,sans-serif" font-size="23" font-weight="800" letter-spacing="2">TUCKER'S</text><text x="43" y="137" fill="#97343a" font-family="Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="3">TRUCKERS</text>
+</g>
+<g font-family="Arial,sans-serif"><rect x="45" y="35" width="210" height="42" rx="21" fill="#fff" fill-opacity=".09" stroke="#fff" stroke-opacity=".16"/><circle cx="67" cy="56" r="5" fill="#d79da1"/><text x="82" y="61" fill="#fff" font-size="13" font-weight="700" letter-spacing="1.4">PLAN THE WHOLE ROUTE</text><text x="45" y="477" fill="#cfcfcf" font-size="12" letter-spacing="2">LANE STRATEGY  /  RELOADS  /  PERFORMANCE</text></g>
+</svg>
