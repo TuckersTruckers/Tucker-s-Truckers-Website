@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="Private Tucker's Truckers carrier portal sign-in.">
+  <meta name="description" content="Private Tucker's Truckers carrier portal.">
   <title>Carrier Portal | Tucker's Truckers</title>
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
   <link rel="stylesheet" href="portal.css">
@@ -31,7 +31,6 @@
       <p class="eyebrow">SECURE ACCESS</p>
       <h2 id="form-title">Sign in to your portal</h2>
       <p class="muted" id="form-description">Use the email address associated with your invitation.</p>
-
       <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
 
       <form id="login-form">
@@ -51,10 +50,77 @@
       </form>
 
       <div id="signed-in-panel" hidden>
-        <div class="signed-icon">✓</div>
-        <h3>You're signed in.</h3>
-        <p class="muted">Your secure sign-in is working. Carrier profile, document upload, and agreement steps will appear here as the portal is completed.</p>
-        <button class="secondary-button" type="button" id="signout-button">Sign out</button>
+        <div class="dashboard-heading">
+          <div>
+            <p class="eyebrow">CARRIER WORKSPACE</p>
+            <h3>Welcome to your portal</h3>
+            <p class="muted">Complete your business profile and upload the documents requested for onboarding.</p>
+          </div>
+          <button class="secondary-button compact" type="button" id="signout-button">Sign out</button>
+        </div>
+
+        <div class="progress-strip" aria-label="Onboarding steps">
+          <div class="progress-step active"><span>1</span><b>Profile</b></div>
+          <div class="progress-step"><span>2</span><b>Documents</b></div>
+          <div class="progress-step"><span>3</span><b>Agreement</b></div>
+        </div>
+
+        <section class="portal-section">
+          <div class="section-heading">
+            <div><p class="eyebrow">STEP 1</p><h4>Carrier business profile</h4></div>
+            <span id="profile-status" class="state-pill">Not saved</span>
+          </div>
+          <form id="profile-form" class="profile-form">
+            <div class="field-grid">
+              <div class="field full"><label for="business-name">Legal business name *</label><input id="business-name" name="business_name" required autocomplete="organization"></div>
+              <div class="field"><label for="mc-number">MC number</label><input id="mc-number" name="mc_number" placeholder="MC-123456"></div>
+              <div class="field"><label for="dot-number">USDOT number</label><input id="dot-number" name="dot_number" inputmode="numeric" placeholder="1234567"></div>
+              <div class="field"><label for="contact-name">Primary contact *</label><input id="contact-name" name="contact_name" required autocomplete="name"></div>
+              <div class="field"><label for="contact-email">Contact email *</label><input id="contact-email" name="contact_email" type="email" required autocomplete="email"></div>
+              <div class="field"><label for="phone">Phone number</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
+              <div class="field"><label for="fleet-size">Fleet size</label><select id="fleet-size" name="fleet_size"><option value="">Select fleet size</option><option value="1">1 truck</option><option value="2">2 trucks</option><option value="3">3 trucks</option><option value="4">4 trucks</option><option value="5">5 trucks</option><option value="6">6 trucks</option><option value="7">7 trucks</option><option value="8">8 trucks</option><option value="9">9 trucks</option><option value="10">10+ trucks</option></select></div>
+              <div class="field full"><label for="mailing-address">Business mailing address</label><input id="mailing-address" name="mailing_address" autocomplete="street-address"></div>
+              <fieldset class="field full equipment-field"><legend>Equipment operated</legend>
+                <div class="check-grid">
+                  <label><input type="checkbox" name="equipment" value="Dry Van"> Dry Van</label>
+                  <label><input type="checkbox" name="equipment" value="Reefer"> Reefer</label>
+                  <label><input type="checkbox" name="equipment" value="Flatbed"> Flatbed</label>
+                  <label><input type="checkbox" name="equipment" value="Conestoga"> Conestoga</label>
+                  <label><input type="checkbox" name="equipment" value="Hot Shot"> Hot Shot</label>
+                  <label><input type="checkbox" name="equipment" value="Tanker"> Tanker</label>
+                  <label><input type="checkbox" name="equipment" value="Box Truck"> Box Truck</label>
+                  <label><input type="checkbox" name="equipment" value="Power Only"> Power Only</label>
+                  <label><input type="checkbox" name="equipment" value="Step Deck"> Step Deck</label>
+                  <label><input type="checkbox" name="equipment" value="Other"> Other</label>
+                </div>
+              </fieldset>
+            </div>
+            <button class="primary-button" type="submit" id="save-profile-button">Save business profile <span>→</span></button>
+          </form>
+        </section>
+
+        <section class="portal-section">
+          <div class="section-heading">
+            <div><p class="eyebrow">STEP 2</p><h4>Business documents</h4></div>
+            <span id="documents-status" class="state-pill">0 uploaded</span>
+          </div>
+          <p class="section-copy">PDF, JPG, or PNG files only. Maximum 10 MB per file. Upload only business documents requested by Tucker's Truckers.</p>
+          <form id="document-form">
+            <div class="field"><label for="document-type">Document type *</label><select id="document-type" required><option value="operating_authority">Operating authority / MC authority</option><option value="insurance">Certificate of insurance</option><option value="w9">W-9</option><option value="voided_check">Voided check / payment verification</option><option value="other">Other requested document</option></select></div>
+            <div class="field"><label for="document-file">Choose file *</label><input id="document-file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required><small class="field-hint">Accepted: PDF, JPG, PNG · Maximum 10 MB</small></div>
+            <button class="primary-button" type="submit" id="upload-button">Upload document <span>↑</span></button>
+          </form>
+          <ul id="document-list" class="document-list"><li class="empty-state">Your uploaded documents will appear here.</li></ul>
+        </section>
+
+        <section class="portal-section agreement-section">
+          <div class="section-heading">
+            <div><p class="eyebrow">STEP 3</p><h4>Dispatcher-carrier agreement</h4></div>
+            <span class="state-pill pending">Pending</span>
+          </div>
+          <p class="section-copy">The agreement will be provided for review before you sign. Nothing is signed by using this portal or uploading documents.</p>
+          <div class="locked-note"><span>3</span><div><b>Agreement not available yet</b><p>We’ll enable this step after the agreement text and signing workflow are finalized.</p></div></div>
+        </section>
       </div>
 
       <div class="card-footer" id="login-footer">
@@ -75,7 +141,6 @@
     const SUPABASE_URL = 'https://bvrlpwkzqmqfcupqjugf.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_rK1mYtBCgePRh9gqrn_hwA_7a_zxOLZ';
     const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
     const $ = (id) => document.getElementById(id);
     const loginForm = $('login-form');
     const passwordForm = $('password-form');
@@ -85,6 +150,7 @@
     const loginFooter = $('login-footer');
     const signedInPanel = $('signed-in-panel');
     const submitButton = $('submit-button');
+    let currentUser = null;
 
     $('year').textContent = new Date().getFullYear();
 
@@ -105,6 +171,14 @@
       formTitle.textContent = 'Portal access confirmed';
       formDescription.textContent = 'You are signed in securely.';
     }
+    function showLogin() {
+      signedInPanel.hidden = true;
+      loginForm.hidden = false;
+      passwordForm.hidden = true;
+      loginFooter.hidden = false;
+      formTitle.textContent = 'Sign in to your portal';
+      formDescription.textContent = 'Use the email address associated with your invitation.';
+    }
     function showPasswordSetup() {
       loginForm.hidden = true;
       passwordForm.hidden = false;
@@ -113,11 +187,81 @@
       formTitle.textContent = 'Set your password';
       formDescription.textContent = 'Choose a password to finish setting up your invited account.';
     }
+    function setProfileStatus(saved) {
+      $('profile-status').textContent = saved ? 'Saved' : 'Not saved';
+      $('profile-status').classList.toggle('complete', saved);
+    }
+    function documentLabel(type) {
+      return ({operating_authority:'Operating authority / MC authority',insurance:'Certificate of insurance',w9:'W-9',voided_check:'Voided check / payment verification',other:'Other requested document'})[type] || 'Business document';
+    }
+
+    async function loadDashboard() {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) return;
+      currentUser = user;
+      $('contact-email').value = user.email || '';
+      const { data: profile, error: profileError } = await supabase.from('carrier_profiles').select('*').eq('user_id', user.id).maybeSingle();
+      if (profileError) {
+        showNotice('Your sign-in worked, but the profile database needs setup. Run portal/database-setup.sql in the Supabase SQL Editor, then reload this page.', 'error');
+      } else if (profile) {
+        $('business-name').value = profile.business_name || '';
+        $('mc-number').value = profile.mc_number || '';
+        $('dot-number').value = profile.dot_number || '';
+        $('contact-name').value = profile.contact_name || '';
+        $('contact-email').value = profile.contact_email || user.email || '';
+        $('phone').value = profile.phone || '';
+        $('fleet-size').value = profile.fleet_size ? String(profile.fleet_size) : '';
+        $('mailing-address').value = profile.mailing_address || '';
+        document.querySelectorAll('input[name="equipment"]').forEach(input => input.checked = (profile.equipment || []).includes(input.value));
+        setProfileStatus(Boolean(profile.business_name && profile.contact_name && profile.contact_email));
+      }
+      await loadDocuments();
+    }
+
+    async function loadDocuments() {
+      if (!currentUser) return;
+      const { data, error } = await supabase.from('carrier_documents').select('id,document_type,file_name,file_path,uploaded_at').eq('user_id', currentUser.id).order('uploaded_at', { ascending: false });
+      const list = $('document-list');
+      list.replaceChildren();
+      if (error) {
+        list.innerHTML = '<li class="empty-state">Document records are not set up yet. Run the portal database setup SQL, then reload.</li>';
+        $('documents-status').textContent = 'Setup needed';
+        return;
+      }
+      $('documents-status').textContent = (data?.length || 0) + ' uploaded';
+      if (!data?.length) {
+        const li = document.createElement('li');
+        li.className = 'empty-state';
+        li.textContent = 'No documents uploaded yet.';
+        list.append(li);
+        return;
+      }
+      for (const doc of data) {
+        const li = document.createElement('li');
+        li.className = 'document-item';
+        const details = document.createElement('div');
+        const name = document.createElement('b');
+        name.textContent = documentLabel(doc.document_type);
+        const filename = document.createElement('small');
+        filename.textContent = doc.file_name;
+        details.append(name, filename);
+        const view = document.createElement('button');
+        view.type = 'button';
+        view.className = 'text-button';
+        view.textContent = 'View';
+        view.addEventListener('click', async () => {
+          const { data: signed, error: signError } = await supabase.storage.from('carrier-documents').createSignedUrl(doc.file_path, 60);
+          if (signError) return showNotice('Could not create a secure document link. Check the storage bucket policies.', 'error');
+          window.open(signed.signedUrl, '_blank', 'noopener,noreferrer');
+        });
+        li.append(details, view);
+        list.append(li);
+      }
+    }
 
     const hashParams = new URLSearchParams(window.location.hash.slice(1));
     const queryParams = new URLSearchParams(window.location.search);
     const authType = hashParams.get('type') || queryParams.get('type');
-
     if (authType === 'invite' || authType === 'recovery' || authType === 'signup') {
       showPasswordSetup();
       showNotice('Invitation or password-reset link detected. Create a new password below.');
@@ -134,7 +278,8 @@
       if (error) return showNotice(error.message, 'error');
       history.replaceState(null, '', window.location.pathname);
       showSignedIn();
-      showNotice('Password saved. Your account is ready for secure sign-in.', 'success');
+      await loadDashboard();
+      showNotice('Password saved. Your account is ready.', 'success');
     });
 
     loginForm.addEventListener('submit', async (event) => {
@@ -142,14 +287,80 @@
       clearNotice();
       submitButton.disabled = true;
       submitButton.textContent = 'Signing in…';
-      const { error } = await supabase.auth.signInWithPassword({
-        email: $('email').value.trim(),
-        password: $('password').value
-      });
+      const { error } = await supabase.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
       submitButton.disabled = false;
       submitButton.innerHTML = 'Sign in <span>→</span>';
       if (error) return showNotice('Sign-in failed. Check your email and password, or use Forgot password to reset it.', 'error');
       showSignedIn();
+      await loadDashboard();
+    });
+
+    $('profile-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearNotice();
+      if (!currentUser) return showNotice('Please sign in again before saving your profile.', 'error');
+      const button = $('save-profile-button');
+      button.disabled = true;
+      button.textContent = 'Saving…';
+      const payload = {
+        user_id: currentUser.id,
+        business_name: $('business-name').value.trim(),
+        mc_number: $('mc-number').value.trim(),
+        dot_number: $('dot-number').value.trim(),
+        contact_name: $('contact-name').value.trim(),
+        contact_email: $('contact-email').value.trim(),
+        phone: $('phone').value.trim(),
+        fleet_size: $('fleet-size').value ? Number($('fleet-size').value) : null,
+        mailing_address: $('mailing-address').value.trim(),
+        equipment: [...document.querySelectorAll('input[name="equipment"]:checked')].map(input => input.value),
+        updated_at: new Date().toISOString()
+      };
+      const { error } = await supabase.from('carrier_profiles').upsert(payload, { onConflict: 'user_id' });
+      button.disabled = false;
+      button.innerHTML = 'Save business profile <span>→</span>';
+      if (error) return showNotice('Profile could not be saved. Run portal/database-setup.sql in Supabase, then reload. Details: ' + error.message, 'error');
+      setProfileStatus(Boolean(payload.business_name && payload.contact_name && payload.contact_email));
+      showNotice('Business profile saved securely.', 'success');
+    });
+
+    $('document-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearNotice();
+      if (!currentUser) return showNotice('Please sign in again before uploading documents.', 'error');
+      const file = $('document-file').files[0];
+      if (!file) return showNotice('Choose a file first.', 'error');
+      const allowed = ['application/pdf', 'image/jpeg', 'image/png'];
+      if (!allowed.includes(file.type)) return showNotice('Please upload a PDF, JPG, or PNG file.', 'error');
+      if (file.size > 10 * 1024 * 1024) return showNotice('That file is larger than 10 MB. Please choose a smaller file.', 'error');
+      const button = $('upload-button');
+      button.disabled = true;
+      button.textContent = 'Uploading securely…';
+      const safeName = file.name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(-100) || 'document';
+      const filePath = currentUser.id + '/' + crypto.randomUUID() + '-' + safeName;
+      const { error: uploadError } = await supabase.storage.from('carrier-documents').upload(filePath, file, { contentType: file.type, upsert: false });
+      if (uploadError) {
+        button.disabled = false;
+        button.innerHTML = 'Upload document <span>↑</span>';
+        return showNotice('Upload failed. Confirm the private carrier-documents bucket and storage policies are configured. Details: ' + uploadError.message, 'error');
+      }
+      const { error: recordError } = await supabase.from('carrier_documents').insert({
+        user_id: currentUser.id,
+        document_type: $('document-type').value,
+        file_name: file.name,
+        file_path: filePath,
+        content_type: file.type
+      });
+      if (recordError) {
+        await supabase.storage.from('carrier-documents').remove([filePath]);
+        button.disabled = false;
+        button.innerHTML = 'Upload document <span>↑</span>';
+        return showNotice('The file was uploaded but its record could not be saved, so the file was removed. Run the portal database setup SQL. Details: ' + recordError.message, 'error');
+      }
+      $('document-file').value = '';
+      button.disabled = false;
+      button.innerHTML = 'Upload document <span>↑</span>';
+      await loadDocuments();
+      showNotice('Document uploaded to your private carrier folder.', 'success');
     });
 
     $('forgot-button').addEventListener('click', async () => {
@@ -159,9 +370,7 @@
         $('email').focus();
         return showNotice('Enter your email address first, then select Forgot password.', 'error');
       }
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + window.location.pathname
-      });
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
       if (error) return showNotice(error.message, 'error');
       showNotice('If an account exists for that email, a password-reset link will be sent. Check your inbox.', 'success');
     });
@@ -169,19 +378,17 @@
     $('signout-button').addEventListener('click', async () => {
       const { error } = await supabase.auth.signOut();
       if (error) return showNotice('Unable to sign out right now. Please try again.', 'error');
-      signedInPanel.hidden = true;
-      loginForm.hidden = false;
-      loginFooter.hidden = false;
-      formTitle.textContent = 'Sign in to your portal';
-      formDescription.textContent = 'Use the email address associated with your invitation.';
+      currentUser = null;
+      showLogin();
       showNotice('You have been signed out.', 'success');
     });
 
     const { data: { session } } = await supabase.auth.getSession();
     if (session && !passwordForm.hidden) {
-      // Invite and recovery links must let the user set a password before showing the signed-in state.
+      // Keep password setup visible when arriving through an invitation or recovery link.
     } else if (session) {
       showSignedIn();
+      await loadDashboard();
     }
   </script>
 </body>
