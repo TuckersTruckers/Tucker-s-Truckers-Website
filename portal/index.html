@@ -262,7 +262,22 @@
     const hashParams = new URLSearchParams(window.location.hash.slice(1));
     const queryParams = new URLSearchParams(window.location.search);
     const authType = hashParams.get('type') || queryParams.get('type');
-    if (authType === 'invite' || authType === 'recovery' || authType === 'signup') {
+    const authCode = queryParams.get('code');
+
+    // Supabase can return invitation links with a PKCE ?code= parameter.
+    // Exchange it before showing password setup so updateUser has an authenticated session.
+    if (authCode) {
+      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(authCode);
+      if (exchangeError) {
+        showLogin();
+        showNotice('This invitation link could not be verified or may have expired. Ask the platform administrator to send a fresh invitation. Details: ' + exchangeError.message, 'error');
+      } else {
+        showPasswordSetup();
+        showNotice('Invitation verified. Create a password to finish setting up your account.');
+        history.replaceState(null, '', window.location.pathname);
+      }
+    } else if (authType === 'invite' || authType === 'recovery' || authType === 'signup') {
+      // Implicit-flow links place the session tokens in the URL hash; supabase-js processes them.
       showPasswordSetup();
       showNotice('Invitation or password-reset link detected. Create a new password below.');
     }
