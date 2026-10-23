@@ -29,3 +29,12 @@
   .navinner>.brand .brandmark{width:112px;height:112px}
   .navinner>.menu{right:0;z-index:2}
 }
+
+
+/* Final mobile header alignment: left-align the logo and tighten banner height */
+@media(max-width:560px){
+  .navinner{justify-content:flex-start;min-height:120px;padding-top:4px;padding-bottom:4px}
+  .navinner>.brand{margin:0;}
+  .navinner>.brand .brandmark{width:112px;height:112px}
+  .navinner>.menu{right:0}
+}
