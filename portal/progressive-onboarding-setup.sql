@@ -65,3 +65,53 @@ create trigger guard_portal_agreement_fields_trigger before update on public.por
 -- Role assignments are not self-service. Only platform admins can manage portal_user_roles.
 -- Users without a role row are temporarily treated as carriers by the workspace UI.
 -- Assign driver/dispatcher roles through a secure admin workflow before inviting those users.
+
+
+-- Platform-owner invitation preparation: choose the intended login type before sending the Supabase invite.
+create table if not exists public.portal_invites (
+ id uuid primary key default gen_random_uuid(),
+ email text not null unique,
+ role text not null check (role in ('dispatcher_admin','dispatcher','carrier_admin','carrier','driver')),
+ status text not null default 'prepared' check (status in ('prepared','used','cancelled')),
+ prepared_by uuid references auth.users(id),
+ created_at timestamptz not null default now(),
+ used_at timestamptz
+);
+alter table public.portal_invites enable row level security;
+drop policy if exists "Platform admins manage prepared invites" on public.portal_invites;
+create policy "Platform admins manage prepared invites" on public.portal_invites
+for all to authenticated using (public.is_portal_admin()) with check (public.is_portal_admin());
+
+create or replace function public.prepare_portal_invite(invite_email text, invite_role text)
+returns void language plpgsql security definer set search_path = '' as $$
+begin
+ if not public.is_portal_admin() then raise exception 'Only platform admins can prepare invitations.'; end if;
+ if lower(trim(invite_email)) = '' then raise exception 'Email is required.'; end if;
+ if invite_role not in ('dispatcher_admin','dispatcher','carrier_admin','carrier','driver') then raise exception 'Invalid login type.'; end if;
+ insert into public.portal_invites(email,role,status,prepared_by,created_at,used_at)
+ values(lower(trim(invite_email)),invite_role,'prepared',auth.uid(),now(),null)
+ on conflict (email) do update set role=excluded.role,status='prepared',prepared_by=auth.uid(),created_at=now(),used_at=null;
+end;
+$$;
+grant execute on function public.prepare_portal_invite(text,text) to authenticated;
+
+create or replace function public.apply_prepared_portal_invite()
+returns trigger language plpgsql security definer set search_path = '' as $$
+declare invitation public.portal_invites%rowtype;
+begin
+ select * into invitation from public.portal_invites
+ where lower(email)=lower(new.email) and status='prepared' limit 1;
+ if found then
+  insert into public.portal_user_roles(user_id,role,created_at,updated_at)
+  values(new.id,invitation.role,now(),now())
+  on conflict (user_id) do update set role=excluded.role,updated_at=now();
+  update public.portal_invites set status='used',used_at=now() where id=invitation.id;
+ end if;
+ return new;
+end;
+$$;
+drop trigger if exists apply_prepared_portal_invite_trigger on auth.users;
+create trigger apply_prepared_portal_invite_trigger after insert on auth.users
+for each row execute function public.apply_prepared_portal_invite();
+
+-- Do not put platform_owner in invite choices. The existing portal_admins table remains the source of super-admin status.
