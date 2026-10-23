@@ -52,15 +52,19 @@ create policy "Platform admins manage setup progress" on public.portal_setup_pro
 create or replace function public.guard_portal_agreement_fields() returns trigger language plpgsql security definer set search_path = '' as $$
 begin
  if auth.uid() is not null and not public.is_portal_admin() then
-  if new.agreement_status is distinct from old.agreement_status or new.agreement_signed_at is distinct from old.agreement_signed_at then
+  if tg_op = 'INSERT' then
+   if new.agreement_status <> 'pending' or new.agreement_signed_at is not null then
+    raise exception 'Agreement status can only be set by the authorized signing workflow.';
+   end if;
+  elsif new.agreement_status is distinct from old.agreement_status or new.agreement_signed_at is distinct from old.agreement_signed_at then
    raise exception 'Agreement status can only be updated by the authorized signing workflow.';
   end if;
  end if;
  return new;
 end;
-$$;
+$;
 drop trigger if exists guard_portal_agreement_fields_trigger on public.portal_setup_progress;
-create trigger guard_portal_agreement_fields_trigger before update on public.portal_setup_progress for each row execute function public.guard_portal_agreement_fields();
+create trigger guard_portal_agreement_fields_trigger before insert or update on public.portal_setup_progress for each row execute function public.guard_portal_agreement_fields();
 
 -- Role assignments are not self-service. Only platform admins can manage portal_user_roles.
 -- Users without a role row are temporarily treated as carriers by the workspace UI.
