@@ -24,7 +24,20 @@ This is the running list of lower-priority cleanup and follow-up tasks. Add new 
 
 **Important:** Do not change or delete DNS/TXT records based only on a remembered warning. Capture the exact “Show original” authentication result first.
 
-## 3. Portal follow-up / verification
+## 3. Carrier-branded dashboard / customization vision
+- [ ] Add carrier company logo upload and display it throughout the carrier-facing portal/dashboard.
+- [ ] Design a customizable appearance interface with light mode, dark mode, selectable accent colors, and carrier-defined company colors.
+- [ ] Explore AI-assisted logo analysis to suggest a coordinated dashboard theme (palette, contrast-safe text colors, and complementary UI accents); let the carrier preview and approve suggestions before applying them.
+- [ ] Make the carrier feel ownership of their own business and workspace, while Tucker’s Truckers quietly handles the operational/technical work behind the scenes.
+- [ ] Use co-branding rather than removing Tucker’s Truckers branding entirely: present the experience as “Tucker’s Truckers × [Carrier Name]” (for example, “Tucker’s Truckers × ABC Carrier”), with the carrier’s logo and colors prominent and Tucker’s Truckers retained as the dispatch/operations partner.
+- [ ] Define branding hierarchy and placement for the login screen, dashboard header, navigation, emails, documents, and mobile layouts so the experience feels cohesive without confusing who provides the service.
+- [ ] Store each carrier’s logo and theme settings securely per carrier account/tenant; verify tenant isolation so one carrier cannot view or change another carrier’s branding assets or settings.
+- [ ] Provide sensible defaults and accessible contrast checks so custom colors remain readable in both light and dark modes; include a reset-to-default option.
+- [ ] Test logo file type/size validation, upload errors, responsive logo sizing, and fallback behavior when no logo is provided.
+
+**Product principle:** The carrier should feel like they are running their own company—not using a generic Tucker’s Truckers-branded tool. Tucker’s Truckers remains visible as the trusted partner, but the carrier’s identity leads the day-to-day experience.
+
+## 4. Portal follow-up / verification
 - [ ] Confirm the updated Carrier setup form saves and reloads every FMCSA and personal-contact field correctly.
 - [ ] Verify the “same as FMCSA” checkboxes copy the intended values and that unchecked fields remain editable.
 - [ ] Finish testing carrier role assignment and tenant-level database security before uploading real carrier documents.
