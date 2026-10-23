@@ -44,6 +44,7 @@ Deno.serve(async (req) => {
   let input: Record<string, unknown>;
   try { input = await req.json(); } catch { return json({ error: "Invalid request body." }, 400); }
   const kind = input.kind === "driver" ? "driver" : input.kind === "carrier" ? "carrier" : "";
+  const onboardingMode = input.onboarding_mode === "admin_assisted" ? "admin_assisted" : "self_service";
   const email = typeof input.email === "string" ? normalize(input.email) : "";
   const username = typeof input.username === "string" ? normalize(input.username) : "";
   const passwordSeed = crypto.randomUUID() + crypto.randomUUID();
@@ -64,6 +65,18 @@ Deno.serve(async (req) => {
   const dot = typeof input.dot_number === "string" ? input.dot_number.trim() : "";
   const phone = typeof input.phone === "string" ? input.phone.trim() : "";
   if (kind === "carrier" && (!businessName || !mc || !dot || !fullName)) return json({ error: "Carrier name, MC number, USDOT number, and authorized contact name are required." }, 400);
+  if (kind === "carrier" && onboardingMode === "admin_assisted") {
+    const requiredAdminFields = [
+      ["fmcsa_address", "FMCSA business address"],
+      ["fmcsa_email", "FMCSA email"],
+      ["personal_address", "Owner personal address"],
+      ["personal_phone", "Owner personal phone"],
+      ["personal_email", "Owner personal email"],
+      ["cell_phone", "Owner cell phone"],
+    ];
+    const missing = requiredAdminFields.find(([key]) => typeof input[key] !== "string" || !(input[key] as string).trim());
+    if (missing) return json({ error: "Admin-assisted setup requires " + missing[1] + ". Switch to self-service if the carrier will finish the missing information." }, 400);
+  }
   if (kind === "driver" && !fullName) return json({ error: "Driver full legal name is required." }, 400);
 
   const { data: created, error: createError } = await admin.auth.admin.createUser({
@@ -80,17 +93,19 @@ Deno.serve(async (req) => {
     const { error } = await admin.from("carrier_profiles").insert({
       user_id: userId, username: username || null, business_name: businessName, mc_number: mc, dot_number: dot,
       contact_name: fullName, contact_email: email, phone, fmcsa_phone: phone,
-      fmcsa_email: typeof input.fmcsa_email === "string" ? input.fmcsa_email.trim() : email,
+      fmcsa_email: typeof input.fmcsa_email === "string" && input.fmcsa_email.trim() ? input.fmcsa_email.trim() : email,
       fmcsa_address: typeof input.fmcsa_address === "string" ? input.fmcsa_address.trim() : "",
       dba_name: typeof input.dba_name === "string" ? input.dba_name.trim() : "",
       personal_address: typeof input.personal_address === "string" ? input.personal_address.trim() : "",
       personal_phone: typeof input.personal_phone === "string" ? input.personal_phone.trim() : phone,
-      personal_email: typeof input.personal_email === "string" ? input.personal_email.trim() : email,
-      cell_phone: typeof input.cell_phone === "string" ? input.cell_phone.trim() : phone,
+      personal_email: typeof input.personal_email === "string" && input.personal_email.trim() ? input.personal_email.trim() : email,
+      cell_phone: typeof input.cell_phone === "string" && input.cell_phone.trim() ? input.cell_phone.trim() : phone,
       secondary_phone: typeof input.secondary_phone === "string" ? input.secondary_phone.trim() : null,
       mailing_address: typeof input.fmcsa_address === "string" ? input.fmcsa_address.trim() : "",
       fleet_size: Number.isFinite(Number(input.fleet_size)) && Number(input.fleet_size) > 0 ? Number(input.fleet_size) : null,
       equipment: Array.isArray(input.equipment) ? input.equipment.filter((x) => typeof x === "string") : [],
+      onboarding_mode: onboardingMode,
+      admin_setup_complete: onboardingMode === "admin_assisted",
       updated_at: new Date().toISOString(),
     });
     if (error) { await cleanup(); return json({ error: "Carrier profile could not be saved: " + error.message }, 400); }
