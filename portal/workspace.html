@@ -64,7 +64,7 @@ async function init(){
  $('hero-copy').textContent=role==='platform_owner'?'Your platform-owner account does not need carrier MC, DOT, insurance, or fleet details.':role==='driver'?'Start with your personal details. Your truck information is optional if you do not own one.':'Start with the essentials. Fleet details and supporting documents can be completed later.';
  $('carrier-card').hidden=!(role==='carrier'||role==='carrier_admin');$('finish-card').hidden=!(role==='carrier'||role==='carrier_admin');$('driver-card').hidden=role!=='driver';$('agreement-card').hidden=role==='platform_owner'||role.includes('dispatcher');$('owner-card').hidden=role!=='platform_owner';$('feature-card').hidden=role==='platform_owner';
  $('driver-email').value=user.email||'';$('email').value=user.email||'';
- if(role==='carrier'||role==='carrier_admin')await loadCarrier();
+ if(role==='carrier'||role==='carrier_admin'){await loadCarrier();const {data:progress}=await supabase.from('portal_setup_progress').select('agreement_status').eq('user_id',user.id).maybeSingle();const signed=progress?.agreement_status==='signed';$('finish-card').hidden=!signed;$('feature-card').hidden=!signed;$('agreement-status').textContent=signed?'Signed':'Pending';$('agreement-status').classList.toggle('good',signed);if(!signed)notice('Your initial profile can be saved now. The full carrier dashboard and Finish Setup checklist unlock after the applicable agreement is signed. Electronic signing is not configured yet, so no signature can be completed here.');}
  if(role==='driver')await loadDriver();
 }
 async function loadCarrier(){
