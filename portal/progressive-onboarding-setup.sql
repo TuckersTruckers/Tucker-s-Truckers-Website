@@ -62,7 +62,7 @@ begin
  end if;
  return new;
 end;
-$;
+$$;
 drop trigger if exists guard_portal_agreement_fields_trigger on public.portal_setup_progress;
 create trigger guard_portal_agreement_fields_trigger before insert or update on public.portal_setup_progress for each row execute function public.guard_portal_agreement_fields();
 
