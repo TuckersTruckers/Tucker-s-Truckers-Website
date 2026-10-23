@@ -20,7 +20,7 @@ alter table public.carrier_profiles
 create unique index if not exists carrier_profiles_username_lower_unique
   on public.carrier_profiles (lower(username)) where username is not null and btrim(username) <> '';
 create unique index if not exists carrier_profiles_mc_number_unique
-  on public.carrier_profiles (regexp_replace(lower(mc_number), '[^a-z0-9]', '', 'g'))
+  on public.carrier_profiles (regexp_replace(regexp_replace(lower(mc_number), '[^a-z0-9]', '', 'g'), '^mc', ''))
   where mc_number is not null and btrim(mc_number) <> '';
 
 alter table public.driver_profiles
