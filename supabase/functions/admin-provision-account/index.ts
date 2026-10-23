@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
   }
 
   const role = kind === "carrier" ? "carrier_admin" : "driver";
-  const { error: roleError } = await admin.from("portal_user_roles").insert({ user_id: userId, role, created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
+  const { error: roleError } = await admin.from("portal_user_roles").upsert({ user_id: userId, role, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }, { onConflict: "user_id" });
   if (roleError) { await cleanup(); return json({ error: "Role could not be assigned: " + roleError.message }, 400); }
 
   const identifiers: { identifier_type: string; identifier_value_normalized: string }[] = [];
