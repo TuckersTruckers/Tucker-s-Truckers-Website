@@ -45,5 +45,18 @@ This is the running list of lower-priority cleanup and follow-up tasks. Add new 
 - [ ] Finish testing carrier role assignment and tenant-level database security before uploading real carrier documents.
 - [ ] Review portal grammar and spelling after the public-site editorial pass.
 
+## 5. Admin-managed carrier and driver onboarding
+- [x] Add an administrator page for creating carrier and driver accounts, assigning drivers to a carrier, and generating one-time setup links (code committed; deployment and testing remain pending).
+- [x] Add a carrier directory and a choice between self-service and admin-assisted profile setup.
+- [x] Add a private login-identifier table and Edge Function code for username, phone, and MC-number sign-in (not live until deployed and tested).
+- [ ] Run `portal/admin-provisioning-migration.sql` in the correct Supabase project.
+- [ ] Deploy `admin-provision-account` and `identifier-sign-in` Edge Functions and verify secrets/redirect allow-list.
+- [ ] Test self-service and admin-assisted carrier creation with a separate test account; validate setup links and duplicate identifiers.
+- [ ] Test creating multiple drivers under separate carriers and verify carrier/driver tenant isolation using RLS and storage policies.
+- [ ] Add an administrator workflow for uploading/associating carrier documents and show document-completion state before calling onboarding complete.
+- [ ] Add auditable agreement delivery/signing only after the agreement and signing workflow are finalized.
+
+**Important:** Do not create real carrier/driver accounts through the new page until the Supabase migration, Edge Functions, and tenant-security tests are complete. The GitHub commits alone do not deploy database changes or Edge Functions.
+
 ---
 Last updated: 2026-10-23
