@@ -34,12 +34,20 @@ Deno.serve(async (req) => {
 
   let type: "username" | "phone" | "mc_number";
   let value: string;
-  if (/^[a-z0-9._-]{3,32}$/i.test(identifier) && !/^mc\s*\d/i.test(identifier)) {
-    type = "username";
-    value = normalized(identifier);
-  } else if (/^mc\s*\d/i.test(identifier) || /^\d{5,}$/i.test(compact(identifier))) {
+  if (/^mc\s*\d/i.test(identifier)) {
     type = "mc_number";
     value = compact(identifier.replace(/^mc\s*/i, ""));
+  } else if (/^[+()0-9.\-\s]+$/.test(identifier) && compact(identifier).length >= 7) {
+    // Treat typical phone-length digit strings as phone numbers even without punctuation.
+    type = "phone";
+    value = compact(identifier);
+  } else if (/^\d{5,6}$/.test(identifier)) {
+    // Unprefixed short numeric IDs are treated as MC numbers; users can enter MC-123456 explicitly.
+    type = "mc_number";
+    value = compact(identifier);
+  } else if (/^[a-z0-9._-]{3,32}$/i.test(identifier)) {
+    type = "username";
+    value = normalized(identifier);
   } else {
     type = "phone";
     value = compact(identifier);
