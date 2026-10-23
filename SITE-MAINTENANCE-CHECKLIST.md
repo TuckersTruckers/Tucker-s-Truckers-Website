@@ -6,6 +6,7 @@ This is the running list of lower-priority cleanup and follow-up tasks. Add new 
 - [x] Standardize capitalization and heading punctuation across the main public pages and portal pages.
 - [x] Update prominent headlines to use consistent Title Case and avoid a trailing period.
 - [ ] Proofread all paragraph copy, buttons, form labels, helper text, notices, and metadata for spelling, grammar, clarity, and consistent terminology.
+- [ ] Audit form labels against standard carrier/transportation-industry wording; use the specific carrier being onboarded as the subject (for example, “Business / Carrier Name,” not “Primary Business Name”).
 - [ ] Review capitalization rules for acronyms and industry terms (FMCSA, USDOT, TONU, dispatching, carrier management) and keep them consistent.
 - [ ] Visually review every page after deployment to ensure longer Title Case headings still wrap cleanly on mobile and desktop.
 
