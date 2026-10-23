@@ -18,3 +18,14 @@
   .navinner>.brand .brandmark{width:86px;height:86px}
   .navinner>.menu{position:absolute;right:0;top:50%;transform:translateY(-50%)}
 }
+
+
+/* Mobile navigation fix: keep Get Started out of the Menu area and enlarge the logo */
+@media(max-width:850px){
+  .navinner>.links{display:none}
+}
+@media(max-width:560px){
+  .navinner{min-height:126px}
+  .navinner>.brand .brandmark{width:112px;height:112px}
+  .navinner>.menu{right:0;z-index:2}
+}
