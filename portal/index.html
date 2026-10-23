@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Private Tucker's Truckers carrier portal sign-in.">
+  <title>Carrier Portal | Tucker's Truckers</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="portal.css">
+</head>
+<body>
+  <header class="portal-header">
+    <a class="brand" href="../index.html" aria-label="Tucker's Truckers home">
+      <img src="../assets/tuckers-truckers-logo.svg" alt="Tucker's Truckers logo">
+      <span>TUCKER'S TRUCKERS<small>CARRIER MANAGEMENT &amp; DISPATCH</small></span>
+    </a>
+    <a class="back-link" href="../index.html">← Back to website</a>
+  </header>
+
+  <main class="portal-shell">
+    <section class="intro">
+      <p class="eyebrow">PRIVATE CARRIER PORTAL</p>
+      <h1>Your business.<br><span>Your information.</span></h1>
+      <p class="intro-copy">A private workspace for invited Tucker's Truckers carrier partners to manage onboarding and business documents.</p>
+      <div class="trust-note"><span class="status-dot"></span> Invite-only access for approved carrier partners</div>
+    </section>
+
+    <section class="login-card" aria-labelledby="form-title">
+      <div class="card-mark">TT</div>
+      <p class="eyebrow">SECURE ACCESS</p>
+      <h2 id="form-title">Sign in to your portal</h2>
+      <p class="muted" id="form-description">Use the email address associated with your invitation.</p>
+
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+      <form id="login-form">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@yourcompany.com" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+        <button class="primary-button" type="submit" id="submit-button">Sign in <span>→</span></button>
+      </form>
+
+      <form id="password-form" hidden>
+        <label for="new-password">Create a password</label>
+        <input id="new-password" name="new-password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required>
+        <label for="confirm-password">Confirm password</label>
+        <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" minlength="8" placeholder="Re-enter your password" required>
+        <button class="primary-button" type="submit">Save password <span>→</span></button>
+      </form>
+
+      <div id="signed-in-panel" hidden>
+        <div class="signed-icon">✓</div>
+        <h3>You're signed in.</h3>
+        <p class="muted">Your secure sign-in is working. Carrier profile, document upload, and agreement steps will appear here as the portal is completed.</p>
+        <button class="secondary-button" type="button" id="signout-button">Sign out</button>
+      </div>
+
+      <div class="card-footer" id="login-footer">
+        <button type="button" class="text-button" id="forgot-button">Forgot password?</button>
+        <p>Access is invitation-only. New accounts cannot be created from this page.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="portal-footer">
+    <span>© <span id="year"></span> Tucker's Truckers LLC</span>
+    <span>Carrier-first support. Your business stays yours.</span>
+  </footer>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL = 'https://bvrlpwkzqmqfcupqjugf.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_rK1mYtBCgePRh9gqrn_hwA_7a_zxOLZ';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const $ = (id) => document.getElementById(id);
+    const loginForm = $('login-form');
+    const passwordForm = $('password-form');
+    const notice = $('notice');
+    const formTitle = $('form-title');
+    const formDescription = $('form-description');
+    const loginFooter = $('login-footer');
+    const signedInPanel = $('signed-in-panel');
+    const submitButton = $('submit-button');
+
+    $('year').textContent = new Date().getFullYear();
+
+    function showNotice(message, kind = 'info') {
+      notice.textContent = message;
+      notice.className = 'notice ' + kind;
+      notice.hidden = false;
+    }
+    function clearNotice() {
+      notice.hidden = true;
+      notice.textContent = '';
+    }
+    function showSignedIn() {
+      loginForm.hidden = true;
+      passwordForm.hidden = true;
+      loginFooter.hidden = true;
+      signedInPanel.hidden = false;
+      formTitle.textContent = 'Portal access confirmed';
+      formDescription.textContent = 'You are signed in securely.';
+    }
+    function showPasswordSetup() {
+      loginForm.hidden = true;
+      passwordForm.hidden = false;
+      loginFooter.hidden = true;
+      signedInPanel.hidden = true;
+      formTitle.textContent = 'Set your password';
+      formDescription.textContent = 'Choose a password to finish setting up your invited account.';
+    }
+
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const queryParams = new URLSearchParams(window.location.search);
+    const authType = hashParams.get('type') || queryParams.get('type');
+
+    if (authType === 'invite' || authType === 'recovery' || authType === 'signup') {
+      showPasswordSetup();
+      showNotice('Invitation or password-reset link detected. Create a new password below.');
+    }
+
+    passwordForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearNotice();
+      const password = $('new-password').value;
+      const confirm = $('confirm-password').value;
+      if (password.length < 8) return showNotice('Please use at least 8 characters for your password.', 'error');
+      if (password !== confirm) return showNotice('The passwords do not match.', 'error');
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) return showNotice(error.message, 'error');
+      history.replaceState(null, '', window.location.pathname);
+      showSignedIn();
+      showNotice('Password saved. Your account is ready for secure sign-in.', 'success');
+    });
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearNotice();
+      submitButton.disabled = true;
+      submitButton.textContent = 'Signing in…';
+      const { error } = await supabase.auth.signInWithPassword({
+        email: $('email').value.trim(),
+        password: $('password').value
+      });
+      submitButton.disabled = false;
+      submitButton.innerHTML = 'Sign in <span>→</span>';
+      if (error) return showNotice('Sign-in failed. Check your email and password, or use Forgot password to reset it.', 'error');
+      showSignedIn();
+    });
+
+    $('forgot-button').addEventListener('click', async () => {
+      clearNotice();
+      const email = $('email').value.trim();
+      if (!email) {
+        $('email').focus();
+        return showNotice('Enter your email address first, then select Forgot password.', 'error');
+      }
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
+      if (error) return showNotice(error.message, 'error');
+      showNotice('If an account exists for that email, a password-reset link will be sent. Check your inbox.', 'success');
+    });
+
+    $('signout-button').addEventListener('click', async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) return showNotice('Unable to sign out right now. Please try again.', 'error');
+      signedInPanel.hidden = true;
+      loginForm.hidden = false;
+      loginFooter.hidden = false;
+      formTitle.textContent = 'Sign in to your portal';
+      formDescription.textContent = 'Use the email address associated with your invitation.';
+      showNotice('You have been signed out.', 'success');
+    });
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session && !passwordForm.hidden) {
+      // Invite and recovery links must let the user set a password before showing the signed-in state.
+    } else if (session) {
+      showSignedIn();
+    }
+  </script>
+</body>
+</html>
