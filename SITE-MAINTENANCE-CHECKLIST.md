@@ -39,6 +39,7 @@ This is the running list of lower-priority cleanup and follow-up tasks. Add new 
 
 ## 4. Portal follow-up / verification
 - [ ] Confirm the updated Carrier setup form saves and reloads every FMCSA and personal-contact field correctly.
+- [x] Correct workspace progress indicators to count the three currently available setup areas accurately; clearly label driver management as a later step.
 - [ ] Verify the “same as FMCSA” checkboxes copy the intended values and that unchecked fields remain editable.
 - [ ] Finish testing carrier role assignment and tenant-level database security before uploading real carrier documents.
 - [ ] Review portal grammar and spelling after the public-site editorial pass.
