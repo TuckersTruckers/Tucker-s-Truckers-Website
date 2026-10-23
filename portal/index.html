@@ -34,8 +34,9 @@
       <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
 
       <form id="login-form">
-        <label for="email">Email address</label>
-        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@yourcompany.com" required>
+        <label for="email">Email, username, phone, or MC number</label>
+        <input id="email" name="email" type="text" autocomplete="username" placeholder="Email, username, phone, or MC-123456" required>
+        <small class="field-hint">Use your account email or an assigned username, phone number, or carrier MC number.</small>
         <label for="password">Password</label>
         <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
         <button class="primary-button" type="submit" id="submit-button">Sign in <span>→</span></button>
@@ -177,7 +178,7 @@
       passwordForm.hidden = true;
       loginFooter.hidden = false;
       formTitle.textContent = 'Sign in to your portal';
-      formDescription.textContent = 'Use the email address associated with your invitation.';
+      formDescription.textContent = 'Sign in using your email, username, phone number, or carrier MC number.';
     }
     function showPasswordSetup() {
       loginForm.hidden = true;
@@ -300,10 +301,24 @@
       clearNotice();
       submitButton.disabled = true;
       submitButton.textContent = 'Signing in…';
-      const { error } = await supabase.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
+      const identifier = $('email').value.trim();
+      const password = $('password').value;
+      let signInError = null;
+      if (identifier.includes('@')) {
+        const { error } = await supabase.auth.signInWithPassword({ email: identifier, password });
+        signInError = error;
+      } else {
+        const { data, error } = await supabase.functions.invoke('identifier-sign-in', { body: { identifier, password } });
+        if (error || data?.error || !data?.access_token || !data?.refresh_token) {
+          signInError = new Error(data?.error || error?.message || 'Sign-in failed.');
+        } else {
+          const { error: sessionError } = await supabase.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token });
+          signInError = sessionError;
+        }
+      }
       submitButton.disabled = false;
       submitButton.innerHTML = 'Sign in <span>→</span>';
-      if (error) return showNotice('Sign-in failed. Check your email and password, or use Forgot password to reset it.', 'error');
+      if (signInError) return showNotice('Sign-in failed. Check your details, or use Forgot password with your account email address.', 'error');
       window.location.href = 'workspace.html';
     });
 
@@ -378,9 +393,9 @@
     $('forgot-button').addEventListener('click', async () => {
       clearNotice();
       const email = $('email').value.trim();
-      if (!email) {
+      if (!email || !email.includes('@')) {
         $('email').focus();
-        return showNotice('Enter your email address first, then select Forgot password.', 'error');
+        return showNotice('For password recovery, enter the email address associated with your account.', 'error');
       }
       const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
       if (error) return showNotice(error.message, 'error');
