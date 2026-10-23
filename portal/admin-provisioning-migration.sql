@@ -12,7 +12,10 @@ alter table public.carrier_profiles
   add column if not exists personal_phone text,
   add column if not exists personal_email text,
   add column if not exists cell_phone text,
-  add column if not exists secondary_phone text;
+  add column if not exists secondary_phone text,
+  add column if not exists onboarding_mode text not null default 'self_service'
+    check (onboarding_mode in ('self_service','admin_assisted')),
+  add column if not exists admin_setup_complete boolean not null default false;
 
 create unique index if not exists carrier_profiles_username_lower_unique
   on public.carrier_profiles (lower(username)) where username is not null and btrim(username) <> '';
