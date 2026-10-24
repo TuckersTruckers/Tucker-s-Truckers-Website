@@ -358,7 +358,7 @@
       if (!file) return showNotice('Choose a file first.', 'error');
       const allowed = ['application/pdf', 'image/jpeg', 'image/png'];
       if (!allowed.includes(file.type)) return showNotice('Please upload a PDF, JPG, or PNG file.', 'error');
-      if (file.size > 10 * 1024 * 1024) return showNotice('That file is larger than 50 MB. Please choose a smaller file.', 'error');
+      if (file.size > 50 * 1024 * 1024) return showNotice('That file is larger than 50 MB. Please choose a smaller file.', 'error');
       const button = $('upload-button');
       button.disabled = true;
       button.textContent = 'Uploading securely…';
