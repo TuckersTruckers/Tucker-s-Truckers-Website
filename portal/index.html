@@ -105,10 +105,10 @@
             <div><p class="eyebrow">STEP 2</p><h4>Business Documents</h4></div>
             <span id="documents-status" class="state-pill">0 uploaded</span>
           </div>
-          <p class="section-copy">PDF, JPG, or PNG files only. Maximum 10 MB per file. Upload only business documents requested by Tucker's Truckers.</p>
+          <p class="section-copy">PDF, JPG, or PNG files only. Maximum 50 MB per file. Upload only business documents requested by Tucker's Truckers.</p>
           <form id="document-form">
             <div class="field"><label for="document-type">Document type *</label><select id="document-type" required><option value="operating_authority">Operating authority / MC authority</option><option value="insurance">Certificate of insurance</option><option value="w9">W-9</option><option value="voided_check">Voided check / payment verification</option><option value="other">Other requested document</option></select></div>
-            <div class="field"><label for="document-file">Choose file *</label><input id="document-file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required><small class="field-hint">Accepted: PDF, JPG, PNG · Maximum 10 MB</small></div>
+            <div class="field"><label for="document-file">Choose file *</label><input id="document-file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required><small class="field-hint">Accepted: PDF, JPG, PNG · Maximum 50 MB</small></div>
             <button class="primary-button" type="submit" id="upload-button">Upload document <span>↑</span></button>
           </form>
           <ul id="document-list" class="document-list"><li class="empty-state">Your uploaded documents will appear here.</li></ul>
@@ -251,7 +251,7 @@
         view.className = 'text-button';
         view.textContent = 'View';
         view.addEventListener('click', async () => {
-          const { data: signed, error: signError } = await supabase.storage.from('carrier-documents').createSignedUrl(doc.file_path, 60);
+          const { data: signed, error: signError } = await supabase.storage.from('Carrier-documents').createSignedUrl(doc.file_path, 60);
           if (signError) return showNotice('Could not create a secure document link. Check the storage bucket policies.', 'error');
           window.open(signed.signedUrl, '_blank', 'noopener,noreferrer');
         });
@@ -358,13 +358,13 @@
       if (!file) return showNotice('Choose a file first.', 'error');
       const allowed = ['application/pdf', 'image/jpeg', 'image/png'];
       if (!allowed.includes(file.type)) return showNotice('Please upload a PDF, JPG, or PNG file.', 'error');
-      if (file.size > 10 * 1024 * 1024) return showNotice('That file is larger than 10 MB. Please choose a smaller file.', 'error');
+      if (file.size > 10 * 1024 * 1024) return showNotice('That file is larger than 50 MB. Please choose a smaller file.', 'error');
       const button = $('upload-button');
       button.disabled = true;
       button.textContent = 'Uploading securely…';
       const safeName = file.name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(-100) || 'document';
       const filePath = currentUser.id + '/' + crypto.randomUUID() + '-' + safeName;
-      const { error: uploadError } = await supabase.storage.from('carrier-documents').upload(filePath, file, { contentType: file.type, upsert: false });
+      const { error: uploadError } = await supabase.storage.from('Carrier-documents').upload(filePath, file, { contentType: file.type, upsert: false });
       if (uploadError) {
         button.disabled = false;
         button.innerHTML = 'Upload document <span>↑</span>';
@@ -378,7 +378,7 @@
         content_type: file.type
       });
       if (recordError) {
-        await supabase.storage.from('carrier-documents').remove([filePath]);
+        await supabase.storage.from('Carrier-documents').remove([filePath]);
         button.disabled = false;
         button.innerHTML = 'Upload document <span>↑</span>';
         return showNotice('The file was uploaded but its record could not be saved, so the file was removed. Run the portal database setup SQL. Details: ' + recordError.message, 'error');
