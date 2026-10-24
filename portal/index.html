@@ -251,7 +251,7 @@
         view.className = 'text-button';
         view.textContent = 'View';
         view.addEventListener('click', async () => {
-          const { data: signed, error: signError } = await supabase.storage.from('Carrier-documents').createSignedUrl(doc.file_path, 60);
+          const { data: signed, error: signError } = await supabase.storage.from('carrier-documents').createSignedUrl(doc.file_path, 60);
           if (signError) return showNotice('Could not create a secure document link. Check the storage bucket policies.', 'error');
           window.open(signed.signedUrl, '_blank', 'noopener,noreferrer');
         });
@@ -364,7 +364,7 @@
       button.textContent = 'Uploading securely…';
       const safeName = file.name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(-100) || 'document';
       const filePath = currentUser.id + '/' + crypto.randomUUID() + '-' + safeName;
-      const { error: uploadError } = await supabase.storage.from('Carrier-documents').upload(filePath, file, { contentType: file.type, upsert: false });
+      const { error: uploadError } = await supabase.storage.from('carrier-documents').upload(filePath, file, { contentType: file.type, upsert: false });
       if (uploadError) {
         button.disabled = false;
         button.innerHTML = 'Upload document <span>↑</span>';
@@ -378,7 +378,7 @@
         content_type: file.type
       });
       if (recordError) {
-        await supabase.storage.from('Carrier-documents').remove([filePath]);
+        await supabase.storage.from('carrier-documents').remove([filePath]);
         button.disabled = false;
         button.innerHTML = 'Upload document <span>↑</span>';
         return showNotice('The file was uploaded but its record could not be saved, so the file was removed. Run the portal database setup SQL. Details: ' + recordError.message, 'error');
